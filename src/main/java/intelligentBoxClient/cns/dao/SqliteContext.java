@@ -16,6 +16,11 @@ public class SqliteContext {
         System.out.println("Opened database successfully");
     }
 
+    public void CreateCallbackRegistrationTable()
+    {
+        String sql = "create tabel call_back_reg "
+                + "(user_id int UNIQUE, call_back_url varchar(255) if not exists;";
+    }
     public void disconnect() {
 
         try {
