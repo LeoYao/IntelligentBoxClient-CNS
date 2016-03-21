@@ -11,4 +11,12 @@ public class Notification {
     public void setList_folder(ListFolder l) {
         _list_folder = l;
     }
+
+    public Delta getDelta() {
+        return _delta;
+    }
+
+    public void setDelta(Delta d) {
+        _delta = d;
+    }
 }

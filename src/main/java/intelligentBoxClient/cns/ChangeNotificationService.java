@@ -20,6 +20,7 @@ public class ChangeNotificationService
 
     public static void main( String[] args )
     {
+/*
         SqliteContext ctx = new SqliteContext();
         try {
             ctx.connect("test.db");
@@ -41,8 +42,9 @@ public class ChangeNotificationService
             e.printStackTrace();
         } finally {
             ctx.disconnect();
-        }
-        //SpringApplication.run(ChangeNotificationService.class, args);
-        //System.out.println( "Hello World!" );
+        }*/
+
+        SpringApplication.run(ChangeNotificationService.class, args);
+
     }
 }
