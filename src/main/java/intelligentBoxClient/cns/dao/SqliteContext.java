@@ -41,4 +41,24 @@ public class SqliteContext {
         stmt.close();
     }
 
+    public void tx_insert() throws SQLException {
+        c.setAutoCommit(false);
+        //c.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        Statement stmt = c.createStatement();
+        stmt.execute(
+                "Insert into tbl1 (one, two) values " +
+                        "(\"world\", 30);");
+        c.rollback();
+        stmt.close();
+        c.setAutoCommit(true);
+    }
+
+    public void insert() throws SQLException {
+        Statement stmt = c.createStatement();
+        stmt.execute(
+                "Insert into tbl1 (one, two) values " +
+                        "(\"world\", 40);");
+
+        stmt.close();
+    }
 }
