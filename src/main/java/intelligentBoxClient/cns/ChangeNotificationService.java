@@ -25,7 +25,7 @@ public class ChangeNotificationService {
 
         //SpringApplication.run(ChangeNotificationService.class, args);
 
-
+        testDynamoDB();
     }
 
     public static void testDynamoDB()
@@ -35,17 +35,17 @@ public class ChangeNotificationService {
 
         CallbackRegRepository repos = ctx.getCallbackRegRepository();
 
-        repos.delete(new CallbackReg(1, null), true);
+        repos.delete(new CallbackReg("1", null), true);
 
-        repos.upsert(new CallbackReg(1, "c1"));
+        repos.upsert(new CallbackReg("1", "c1"));
 
-        CallbackReg item = ctx.getCallbackRegRepository().get(1);
-        logger.info(item.getUserId() + " " + item.getCallbackUrl() + " " + item.getVersion());
+        CallbackReg item = ctx.getCallbackRegRepository().get("1");
+        logger.info(item.getAccountId() + " " + item.getCallbackUrl() + " " + item.getVersion());
 
         item.setCallbackUrl("c2");
         ctx.getCallbackRegRepository().upsert(item);
 
-        item = ctx.getCallbackRegRepository().get(1);
-        logger.info(item.getUserId() + " " + item.getCallbackUrl() + " " + item.getVersion());
+        item = ctx.getCallbackRegRepository().get("1");
+        logger.info(item.getAccountId() + " " + item.getCallbackUrl() + " " + item.getVersion());
     }
 }

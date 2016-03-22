@@ -10,25 +10,25 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBVersionAttribute;
  */
 @DynamoDBTable(tableName="CallbackReg")
 public class CallbackReg {
-    private int _userId;
+    private String _accountId;
     private String _callbackUrl;
     private Long _version;
 
     public CallbackReg() {
     }
 
-    public CallbackReg(int u, String c) {
-        _userId = u;
-        _callbackUrl = c;
+    public CallbackReg(String accountId, String callbackUrl) {
+        _accountId = accountId;
+        _callbackUrl = callbackUrl;
     }
 
-    @DynamoDBHashKey(attributeName = "user_id")
-    public int getUserId() {
-        return _userId;
+    @DynamoDBHashKey(attributeName = "account_id")
+    public String getAccountId() {
+        return _accountId;
     }
 
-    public void setUserId(int userId) {
-        _userId = userId;
+    public void setAccountId(String accountId) {
+        _accountId = accountId;
     }
 
     @DynamoDBAttribute(attributeName = "callback_url")

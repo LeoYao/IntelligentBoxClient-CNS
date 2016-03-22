@@ -4,11 +4,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
-import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
-import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.*;
 import intelligentBoxClient.cns.dao.objects.CallbackReg;
 import org.apache.commons.logging.Log;
@@ -29,10 +25,10 @@ public class CallbackRegRepository {
         _mapper = new DynamoDBMapper(client);
     }
 
-    public CallbackReg get(int userId) {
+    public CallbackReg get(String accountId) {
         try {
 
-            CallbackReg item = _mapper.load(CallbackReg.class, userId);
+            CallbackReg item = _mapper.load(CallbackReg.class, accountId);
             return item;
         } catch (Exception e) {
             logger.error("Error in get.", e);
@@ -85,17 +81,17 @@ public class CallbackRegRepository {
             logger.debug("Attempting to create table; please wait...");
             Table table = dynamoDB.createTable(tableName,
                     Arrays.asList(
-                            new KeySchemaElement("user_id", KeyType.HASH)
+                            new KeySchemaElement("account_id", KeyType.HASH)
                     ),
                     Arrays.asList(
-                            new AttributeDefinition("user_id", ScalarAttributeType.N)
+                            new AttributeDefinition("account_id", ScalarAttributeType.S)
                     ),
                     new ProvisionedThroughput(5L, 5L));
             table.waitForActive();
             logger.debug("Success.  Table status: " + table.getDescription().getTableStatus());
 
         } catch (ResourceInUseException e) {
-            logger.debug("Unable to create table: ", e);
+            logger.trace("Unable to create table: ", e);
         } catch (InterruptedException e) {
             logger.error("Unable to create table: ", e);
         }

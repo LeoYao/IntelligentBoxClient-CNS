@@ -11,8 +11,6 @@ public class RegistrationController {
     @RequestMapping(value="/register", method = RequestMethod.POST)
     public void verify(@RequestBody RegistrationRequest request) {
 
-        System.out.println("---------------RegistrationRequest------------------");
-        System.out.println("Received challenge: " + request);
-        System.out.println("----------------------------------------------------");
+
     }
 }
