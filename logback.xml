@@ -8,17 +8,16 @@
         <file>logs.log</file>
         <append>true</append>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg %ex%n</pattern>
         </encoder>
     </appender>
 -->
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%method] %-5level %logger{36} - %msg %ex%n</pattern>
         </encoder>
     </appender>
-
 
     <logger name="com.amazonaws" level="WARN">
         <appender-ref ref="CONSOLE" />
@@ -28,7 +27,7 @@
         <appender-ref ref="CONSOLE" />
     </logger>
 
-    <logger name="intelligentBoxClient.cns" level="INFO" additivity="false">
+    <logger name="intelligentBoxClient.cns" level="INFO">
         <appender-ref ref="CONSOLE" />
     </logger>
 </configuration>

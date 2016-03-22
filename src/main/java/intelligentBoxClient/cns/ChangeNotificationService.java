@@ -3,120 +3,49 @@ package intelligentBoxClient.cns;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.*;
-import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.model.*;
+import intelligentBoxClient.cns.dao.CallbackRegRepository;
+import intelligentBoxClient.cns.dao.DynamoDbContext;
+import intelligentBoxClient.cns.dao.objects.CallbackReg;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Arrays;
 
 /**
  * Created by Leo on 3/20/16.
  */
 
 @SpringBootApplication
-public class ChangeNotificationService
-{
+public class ChangeNotificationService {
     private final static Log logger = LogFactory.getLog(ChangeNotificationService.class);
 
     public static void main(String[] args) {
 
-/*
-        SqliteContext ctx = new SqliteContext();
-        try {
-            ctx.connect("test.db");
-            ctx.query();
-            System.out.println("------------------");
-            ctx.tx_insert();
-            ctx.query();
-            System.out.println("------------------");
-            ctx.insert();
-            ctx.query();
-            System.out.println("------------------");
-        } catch (SQLException e) {
-            if (SQLiteErrorCode.SQLITE_BUSY.code == e.getErrorCode()) {
-                System.out.println("locked");
-            } else {
-                e.printStackTrace();
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            ctx.disconnect();
-        }*/
-
         //SpringApplication.run(ChangeNotificationService.class, args);
 
-        AmazonDynamoDBClient client = new AmazonDynamoDBClient(
-                new EnvironmentVariableCredentialsProvider());
 
-        DynamoDB dynamoDB = new DynamoDB(client);
+    }
 
-        /*
-        String tableName = "Movies";
+    public static void testDynamoDB()
+    {
+        DynamoDbContext ctx = new DynamoDbContext();
+        ctx.initialize();
 
-        try {
-            System.out.println("Attempting to create table; please wait...");
-            Table table = dynamoDB.createTable(tableName,
-                    Arrays.asList(
-                            new KeySchemaElement("year", KeyType.HASH),  //Partition key
-                            new KeySchemaElement("title", KeyType.RANGE)), //Sort key
-                    Arrays.asList(
-                            new AttributeDefinition("year", ScalarAttributeType.N),
-                            new AttributeDefinition("title", ScalarAttributeType.S)),
-                    new ProvisionedThroughput(10L, 10L));
-            table.waitForActive();
-            System.out.println("Success.  Table status: " + table.getDescription().getTableStatus());
+        CallbackRegRepository repos = ctx.getCallbackRegRepository();
 
-        } catch (Exception e) {
-            System.err.println("Unable to create table: ");
-            System.err.println(e.getMessage());
-        }
-        */
+        repos.delete(new CallbackReg(1, null), true);
 
-        Table table = dynamoDB.getTable("call_back_reg");
+        repos.upsert(new CallbackReg(1, "c1"));
 
-        HashMap<String, String> nameMap = new HashMap<String, String>();
-        nameMap.put("#uid", "user_id");
+        CallbackReg item = ctx.getCallbackRegRepository().get(1);
+        logger.info(item.getUserId() + " " + item.getCallbackUrl() + " " + item.getVersion());
 
-        HashMap<String, Object> valueMap = new HashMap<String, Object>();
-        valueMap.put(":uid", 12345678);
+        item.setCallbackUrl("c2");
+        ctx.getCallbackRegRepository().upsert(item);
 
-        QuerySpec querySpec = new QuerySpec()
-                .withKeyConditionExpression("user_id = :uid")
-                //.withNameMap(new NameMap().with("#uid", "user_id"))
-                .withValueMap(valueMap);
-
-        ItemCollection<QueryOutcome> items = null;
-        Iterator<Item> iterator = null;
-        Item item = null;
-
-        try {
-
-            //items = table.query(querySpec);
-
-            items = table.query(new KeyAttribute("user_id", 12345678));
-            iterator = items.iterator();
-            while (iterator.hasNext()) {
-                item = iterator.next();
-                logger.info(item.getNumber("user_id") + ": "
-                        + item.getString("call_back_url"));
-            }
-
-
-            items = table.query(new KeyAttribute("user_id", 23456789));
-            iterator = items.iterator();
-            while (iterator.hasNext()) {
-                item = iterator.next();
-                logger.info(item.getNumber("user_id") + ": "
-                        + item.getString("call_back_url"));
-            }
-        } catch (Exception e) {
-            System.err.println("Unable to query an item of id 12345678");
-            System.err.println(e.getMessage());
-        }
-
-
+        item = ctx.getCallbackRegRepository().get(1);
+        logger.info(item.getUserId() + " " + item.getCallbackUrl() + " " + item.getVersion());
     }
 }
