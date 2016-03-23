@@ -5,6 +5,8 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.UUID;
+
 
 /**
  * Created by yaohx on 3/22/2016.
@@ -15,9 +17,11 @@ public class DynamoDbContext {
 
     private AmazonDynamoDBClient _client;
 
-    public DynamoDbContext()
-    {
-         _client = new AmazonDynamoDBClient(
+    public String _uuid;
+
+    public DynamoDbContext() {
+        _uuid = UUID.randomUUID().toString();
+        _client = new AmazonDynamoDBClient(
                 new EnvironmentVariableCredentialsProvider());
     }
 

@@ -9,8 +9,14 @@ import intelligentBoxClient.cns.dao.DynamoDbContext;
 import intelligentBoxClient.cns.dao.objects.CallbackReg;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.web.context.WebApplicationContext;
+
 import java.util.Arrays;
 
 /**
@@ -23,29 +29,14 @@ public class ChangeNotificationService {
 
     public static void main(String[] args) {
 
-        //SpringApplication.run(ChangeNotificationService.class, args);
-
-        testDynamoDB();
+        SpringApplication.run(ChangeNotificationService.class, args);
     }
 
-    public static void testDynamoDB()
+
+    @Bean
+    @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+    public DynamoDbContext dynamoDbContext()
     {
-        DynamoDbContext ctx = new DynamoDbContext();
-        ctx.initialize();
-
-        CallbackRegRepository repos = ctx.getCallbackRegRepository();
-
-        repos.delete(new CallbackReg("1", null), true);
-
-        repos.upsert(new CallbackReg("1", "c1"));
-
-        CallbackReg item = ctx.getCallbackRegRepository().get("1");
-        logger.info(item.getAccountId() + " " + item.getCallbackUrl() + " " + item.getVersion());
-
-        item.setCallbackUrl("c2");
-        ctx.getCallbackRegRepository().upsert(item);
-
-        item = ctx.getCallbackRegRepository().get("1");
-        logger.info(item.getAccountId() + " " + item.getCallbackUrl() + " " + item.getVersion());
+        return new DynamoDbContext();
     }
 }

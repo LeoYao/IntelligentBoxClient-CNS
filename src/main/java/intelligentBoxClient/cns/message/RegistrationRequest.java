@@ -4,12 +4,18 @@ package intelligentBoxClient.cns.message;
  * Created by yaohx on 3/21/2016.
  */
 public class RegistrationRequest {
-    private int _userId;
+    private String _accountId;
     private String _callbackUrl;
 
-    public int getUserId() {return _userId;}
-    public void setUserId(int u) {_userId = u;}
+    public String getAccountId() {return _accountId;}
+    public void setAccountId(String accountId) {_accountId = accountId;}
 
     public String getCallbackUrl() {return _callbackUrl;}
-    public void setCallbackUrl(String c) {_callbackUrl = c;}
+    public void setCallbackUrl(String callbackUrl) {_callbackUrl = callbackUrl;}
+
+    @Override
+    public String toString()
+    {
+        return "[accountId: " + _accountId + ", callbackUrl: " + _callbackUrl + "]";
+    }
 }
