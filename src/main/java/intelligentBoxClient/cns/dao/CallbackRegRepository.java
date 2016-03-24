@@ -9,20 +9,24 @@ import com.amazonaws.services.dynamodbv2.model.*;
 import intelligentBoxClient.cns.dao.objects.CallbackReg;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
 
 /**
  * Created by yaohx on 3/22/2016.
  */
-public class CallbackRegRepository {
+@Repository
+public class CallbackRegRepository implements ICallbackRegRepository {
 
     private DynamoDBMapper _mapper;
 
     private final static Log logger = LogFactory.getLog(CallbackRegRepository.class);
 
-    public CallbackRegRepository(AmazonDynamoDBClient client) {
-        _mapper = new DynamoDBMapper(client);
+    @Autowired
+    public CallbackRegRepository(DynamoDbContext ctx) {
+        _mapper = new DynamoDBMapper(ctx.getClient());
     }
 
     public CallbackReg get(String accountId) {

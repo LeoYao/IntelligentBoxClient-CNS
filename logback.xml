@@ -20,19 +20,11 @@
     </appender>
 
 
-    <logger name="org.springframework" level="WARN">
+    <root level="WARN">
         <appender-ref ref="CONSOLE" />
-    </logger>
+    </root>
 
-    <logger name="com.amazonaws" level="WARN">
-        <appender-ref ref="CONSOLE" />
-    </logger>
-
-    <logger name="org.apache.http.wire" level="WARN">
-        <appender-ref ref="CONSOLE" />
-    </logger>
-
-    <logger name="intelligentBoxClient.cns" level="DEBUG">
+    <logger name="intelligentBoxClient" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE" />
     </logger>
 </configuration>

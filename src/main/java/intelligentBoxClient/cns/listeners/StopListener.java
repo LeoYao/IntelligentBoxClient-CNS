@@ -1,4 +1,4 @@
-package intelligentBoxClient.cns.components;
+package intelligentBoxClient.cns.listeners;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;

@@ -1,22 +1,23 @@
 package intelligentBoxClient.cns.message;
 
+/**
+ * Created by yaohx on 3/24/2016.
+ */
 public class Notification {
-    private ListFolder _list_folder;
-    private Delta _delta;
+    private String _accountId;
 
-    public ListFolder getList_folder() {
-        return _list_folder;
+    public Notification(String accountId)
+    {
+        _accountId = accountId;
     }
 
-    public void setList_folder(ListFolder l) {
-        _list_folder = l;
+    public String getAccountId()
+    {
+        return _accountId;
     }
 
-    public Delta getDelta() {
-        return _delta;
-    }
-
-    public void setDelta(Delta d) {
-        _delta = d;
+    public void setAccountId(String accountId)
+    {
+        _accountId = accountId;
     }
 }
