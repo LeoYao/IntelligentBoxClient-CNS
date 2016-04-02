@@ -27,13 +27,13 @@ public class NotificationWorker implements Runnable, INotificationWorker {
     private String[] _accounts;
     private CallbackRegRepository _callbackRegRepository;
 
-    @Autowired(required = false)
-    private Configuration _configuation;
+    private Configuration _configuration;
 
     @Autowired
-    public NotificationWorker(CallbackRegRepository callbackRegRepository)
+    public NotificationWorker(CallbackRegRepository callbackRegRepository, Configuration configuration)
     {
         _callbackRegRepository = callbackRegRepository;
+        _configuration = configuration;
     }
 
     public void start(String[] accounts)
@@ -77,6 +77,7 @@ public class NotificationWorker implements Runnable, INotificationWorker {
                         e.printStackTrace();
                     }
                 }
+                break;
             }
         }
         else
@@ -89,9 +90,9 @@ public class NotificationWorker implements Runnable, INotificationWorker {
     {
         if (_retryMax < 0)
         {
-            if (_configuation != null)
+            if (_configuration != null)
             {
-                _retryMax = _configuation.getRetryMax();
+                _retryMax = _configuration.getRetryMax();
             }
             else
             {
