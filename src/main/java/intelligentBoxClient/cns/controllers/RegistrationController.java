@@ -27,14 +27,14 @@ public class RegistrationController {
     @RequestMapping(value="/register", method = RequestMethod.POST)
     public void register(@RequestBody RegistrationRequest request) {
         logger.debug("received: " + request.toString());
-        _callbackRegRepoistory.upsert(new CallbackReg(request.getAccountId(), request.getCallbackUrl()), true);
+        _callbackRegRepoistory.register(request.getAccountId(), request.getCallbackUrl());
         logger.debug("registered: " + request.toString());
     }
 
     @RequestMapping(value="/unregister", method = RequestMethod.POST)
     public void unregister(@RequestBody RegistrationRequest request) {
         logger.debug("received: " + request.toString());
-        _callbackRegRepoistory.delete(new CallbackReg(request.getAccountId(), request.getCallbackUrl()), true);
+        _callbackRegRepoistory.unregister(request.getAccountId(), request.getCallbackUrl());
         logger.debug("unregistered: " + request.toString());
     }
 

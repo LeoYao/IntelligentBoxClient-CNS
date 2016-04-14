@@ -12,7 +12,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by yaohx on 3/22/2016.
@@ -40,38 +42,57 @@ public class CallbackRegRepository implements ICallbackRegRepository {
         }
     }
 
-    public boolean upsert(CallbackReg item) {
-        return upsert(item, false);
-    }
-
-    public boolean upsert(CallbackReg item, boolean overwritten) {
+    public boolean register(String accountId, String callbackUrl){
         try {
-            if (!overwritten) {
-                _mapper.save(item);
-            } else {
+            CallbackReg item = _mapper.load(CallbackReg.class, accountId);
+            if (item == null || item.getCallbackUrl() == null || item.getCallbackUrl().trim().length() == 0){
+                item = new CallbackReg(accountId, callbackUrl);
                 _mapper.save(item, new DynamoDBMapperConfig(DynamoDBMapperConfig.SaveBehavior.CLOBBER));
+            } else {
+                List<String> callbackUrls = Arrays.asList(item.getCallbackUrl().split(","));
+                if (!callbackUrls.contains(callbackUrl)){
+                    String newCallbackUrls = item.getCallbackUrl() + "," + callbackUrl;
+                    CallbackReg newItem = new CallbackReg(accountId, newCallbackUrls);
+                    _mapper.save(newItem, new DynamoDBMapperConfig(DynamoDBMapperConfig.SaveBehavior.CLOBBER));
+                }
             }
             return true;
         } catch (Exception e) {
-            logger.error("Error in upsert.", e);
+            logger.error("Error in get.", e);
             return false;
         }
     }
 
-    public boolean delete(CallbackReg item) {
-        return delete(item, false);
-    }
-
-    public boolean delete(CallbackReg item, boolean force) {
+    public boolean unregister(String accountId, String callbackUrl){
         try {
-            if (!force) {
-                _mapper.delete(item);
+            CallbackReg item = _mapper.load(CallbackReg.class, accountId);
+            if (item == null || item.getCallbackUrl() == null || item.getCallbackUrl().trim().length() == 0){
+                return true;
             } else {
-                _mapper.delete(item, new DynamoDBMapperConfig(DynamoDBMapperConfig.SaveBehavior.CLOBBER));
+                List<String> callbackUrls = Arrays.asList(item.getCallbackUrl().split(","));
+                if (callbackUrls.contains(callbackUrl)){
+                    if (callbackUrls.size() == 1){
+                        _mapper.delete(item, new DynamoDBMapperConfig(DynamoDBMapperConfig.SaveBehavior.CLOBBER));
+                    } else {
+                        StringBuilder sb = new StringBuilder();
+                        for (String cu : callbackUrls) {
+                            if (cu.equals(callbackUrl)){
+                                continue;
+                            }
+                            if (sb.length() > 0) {
+                                sb.append(",");
+                            }
+                            sb.append(cu);
+                        }
+                        String newCallbackUrls = sb.toString();
+                        CallbackReg newItem = new CallbackReg(accountId, newCallbackUrls);
+                        _mapper.save(newItem, new DynamoDBMapperConfig(DynamoDBMapperConfig.SaveBehavior.CLOBBER));
+                    }
+                }
             }
             return true;
         } catch (Exception e) {
-            logger.error("Error in delete.", e);
+            logger.error("Error in get.", e);
             return false;
         }
     }

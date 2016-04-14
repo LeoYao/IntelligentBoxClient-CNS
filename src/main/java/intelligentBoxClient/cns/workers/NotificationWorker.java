@@ -58,26 +58,27 @@ public class NotificationWorker implements Runnable, INotificationWorker {
         CallbackReg callbackReg = _callbackRegRepository.get(account);
         if (callbackReg != null)
         {
-            String callbackUrl = "http://" + callbackReg.getCallbackUrl() + "/notify";
-            RestTemplate restTemplate = new RestTemplate();
-            for (int i = 0; i <= retryMax; ++i)
-            {
-                if (i == retryMax)
-                {
-                    logger.error("Failed to notify account [" + account +"], callbackUrl: [" + callbackUrl + "]");
+            String[] callbackHosts = callbackReg.getCallbackUrl().split(",");
+
+            for (String callbackHost : callbackHosts) {
+                String callbackUrl = "http://" + callbackHost + "/notify";
+                RestTemplate restTemplate = new RestTemplate();
+                for (int i = 0; i <= retryMax; ++i) {
+                    if (i == retryMax) {
+                        logger.error("Failed to notify account [" + account + "], callbackUrl: [" + callbackUrl + "]");
+                        break;
+                    }
+                    Notification request = new Notification(account);
+                    ResponseEntity<Object> response = restTemplate.postForEntity(callbackUrl, request, Object.class);
+                    if (HttpStatus.OK != response.getStatusCode()) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     break;
                 }
-                Notification request = new Notification(account);
-                ResponseEntity<Object> response = restTemplate.postForEntity(callbackUrl, request, Object.class);
-                if (HttpStatus.OK != response.getStatusCode())
-                {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
             }
         }
         else

@@ -8,8 +8,6 @@ import intelligentBoxClient.cns.dao.objects.CallbackReg;
 public interface ICallbackRegRepository {
 
     CallbackReg get(String accountId);
-    boolean upsert(CallbackReg item);
-    boolean upsert(CallbackReg item, boolean overwritten);
-    boolean delete(CallbackReg item);
-    boolean delete(CallbackReg item, boolean force);
+    boolean register(String accountId, String callbackUrl);
+    boolean unregister(String accountId, String callbackUrl);
 }
